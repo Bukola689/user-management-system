@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\V1\Auth;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,31 +23,38 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
+             'name' => [
+                'sometimes',
                 'string',
                 'min:2',
-                'max:100'
+                'max:100',
             ],
 
             'email' => [
-                'required',
-                 'email:rfc,dns',
-                'unique:users,email',
-            ],
-
-             'password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
+                'sometimes',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')
+                    ->ignore($user?->id),
             ],
 
             'phone' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:30',
-                'unique:users,phone',
+                Rule::unique('users', 'phone')
+                    ->ignore($user?->id),
+            ],
+
+            'status' => [
+                'sometimes',
+                Rule::in([
+                    'active',
+                    'inactive',
+                    'suspended',
+                    'pending',
+                ]),
             ],
         ];
     }

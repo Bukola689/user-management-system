@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\V1\Auth;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,31 +23,18 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+             'current_password' => [
                 'required',
-                'string',
-                'min:2',
-                'max:100'
+                'current_password',
             ],
 
-            'email' => [
+            'password' => [
                 'required',
-                 'email:rfc,dns',
-                'unique:users,email',
-            ],
-
-             'password' => [
-                'required',
-                'string',
-                'min:8',
                 'confirmed',
-            ],
-
-            'phone' => [
-                'nullable',
-                'string',
-                'max:30',
-                'unique:users,phone',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
             ],
         ];
     }

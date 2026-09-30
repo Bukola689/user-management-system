@@ -15,21 +15,27 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-             'id' => $this->id,
+            // 'id' => $this->id,
+
             'name' => $this->name,
+
             'email' => $this->email,
+
             'phone' => $this->phone,
+
             'status' => $this->status,
-            'email_verified_at' => $this->email_verified_at,
-            'last_login_at' => $this->last_login_at,
 
-            'profile' => $this->whenLoaded(
-                'profile',
-                fn () => new UserProfileResource($this->profile)
-            ),
+            'email_verified_at' =>
+                $this->email_verified_at?->toISOString(),
 
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'last_login_at' =>
+                $this->last_login_at?->toISOString(),
+
+            'created_at' =>
+                $this->created_at?->toISOString(),
+
+            'updated_at' =>
+                $this->updated_at?->toISOString(),
         ];
     }
 }

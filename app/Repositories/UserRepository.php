@@ -2,56 +2,57 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use App\Contracts\UserRepositoryInterface;
+// use App\Models\User;
+// use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+// use App\Contracts\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
     public function create(array $data): User
     {
-        // Implementation for creating a new user
-
         return User::create($data);
     }
 
     public function findById(int $id): ?User
     {
-        // Implementation for finding a user by ID
-
         return User::find($id);
     }
 
     public function findByEmail(string $email): ?User
     {
-        // Implementation for finding a user by email
-
         return User::where('email', $email)->first();
     }
 
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        // Implementation for paginating users
-
+    public function paginate(
+        int $perPage = 15,
+        ?string $search = null,
+        ?string $status = null
+    ): LengthAwarePaginator {
         return User::query()
-                    ->latest()
-                    ->paginate($perPage);
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->latest('id')
+            ->paginate($perPage);
     }
 
-    public function update(int $id, array $data): bool
+    public function update(User $user, array $data): User
     {
-        // Implementation for updating a user
-
-       $user->update($data);
+        $user->update($data);
 
         return $user->refresh();
     }
 
     public function delete(User $user): bool
     {
-
-        // Implementation for deleting a user
-
         return (bool) $user->delete();
     }
 }

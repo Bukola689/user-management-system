@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\UserRepositoryInterface;
+use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \App\Contracts\UserRepositoryInterface::class,
-            \App\DTOs\User\CreateUserDTO::class,
+             UserRepositoryInterface::class,
+            UserRepository::class
         );
     }
 

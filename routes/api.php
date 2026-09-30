@@ -16,12 +16,13 @@ Route::get('/user', function (Request $request) {
 
          //....auth....//
         Route::group(['prefix'=> 'auth'], function() {
-            Route::post('register', [RegisterController::class, 'register']);
-            Route::post('login', [LoginController::class, 'login']);
+            Route::post('register', [AuthController::class, 'register']);
+            Route::post('login', [AuthController::class, 'login']);
             Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
-         Route::group(['middleware' => 'auth:sanctum'], function() {
-            Route::post('logout', [LogoutController::class, 'logout']);
-            Route::post('/email/verification-notification', [VerifyEmailController::class, 'resendNotification'])->name('verification.send');
+         Route::group(['middleware' => 'auth:sanctum', 'verified'], function() {
+            Route::post('logout', [AuthController::class, 'logout']);
+            Route::get('/auth/email/verify/{id}/{hash}',[AuthController::class, 'verifyEmail'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+            Route::post('/auth/email/resend',[AuthController::class, 'resendVerification'])->middleware('throttle:6,1');
             Route::post('reset-password', [ResetPasswordController::class, 'resetPassword']); 
  
          });
@@ -35,21 +36,26 @@ Route::get('/user', function (Request $request) {
        });
 
 
-       Route::group(['middleware' => ['auth:sanctum']], function() {
-        Route::group(['middleware' => ['role:super-admin'], 'prefix' => 'admin'], function() {
-        Route::get('users', [UserController::class, 'index']);
-        Route::post('users', [UserController::class, 'store']);
-        Route::get('users/{id}', [UserController::class, 'show']);
-        Route::put('users/{id}', [UserController::class, 'update']);
-        Route::delete('users/{id}', [UserController::class, 'destroy']);
-        Route::post('users/{id}/suspend', [UserController::class, 'suspend']);
-        Route::post('users/{id}/active', [UserController::class, 'active']);
+    Route::group(['middleware' => ['auth:sanctum']], function() {
+      Route::get('/users', [UserController::class, 'index'])
+        ->middleware('permission:users.view');
+
+      Route::post('/users', [UserController::class, 'store'])
+        ->middleware('permission:users.create');
+
+      Route::get('/users/{user}', [UserController::class, 'show'])
+        ->middleware('permission:users.view');
+
+      Route::put('/users/{user}', [UserController::class, 'update'])
+        ->middleware('permission:users.update');
+
+      Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->middleware('permission:users.delete');
+
         Route::get('users/{id}/roles', [AdminAdminRoleController::class, 'show']);
         Route::get('users/{id}/permissions', [AdminPermissionController::class, 'show']);
         Route::post('users/{id}/roles', [AdminAdminRoleController::class, 'changeRole']);
-        Route::post('/products/categories', [CategoryController::class, 'store']);
-        Route::put('/products/categories/{id}', [CategoryController::class, 'update']);
-        Route::delete('/products/categories/{id}', [CategoryController::class, 'destroy']);
+       
       
        });
 
@@ -85,4 +91,3 @@ Route::get('/user', function (Request $request) {
 
     });
 
-  });
