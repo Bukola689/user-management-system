@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-// use App\Models\User;
-// use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-// use App\Contracts\UserRepositoryInterface;
+use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Contracts\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
