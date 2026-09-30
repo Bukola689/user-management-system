@@ -2,16 +2,33 @@
 
 namespace App\DTOs\User;
 
-class CreateUserDTO
+final readonly class CreateUserDTO
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct(
-        public readonly string $name,
-        public readonly string $email,
-        public readonly string $password,
-        public readonly ? string $phone = null,
-    )
-    {}
+        public string $name,
+        public string $email,
+        public string $password,
+        public ?string $phone = null,
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            name: $data['name'],
+            email: $data['email'],
+            password: $data['password'],
+            phone: $data['phone'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+            'phone' => $this->phone,
+        ];
+    }
 }
