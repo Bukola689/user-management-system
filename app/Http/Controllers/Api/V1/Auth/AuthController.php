@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\DTOs\User\CreateUserDTO;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-// use Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
