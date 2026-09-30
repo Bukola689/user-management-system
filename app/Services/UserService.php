@@ -3,16 +3,23 @@
 
 namespace App\Services;
 
-// use App\Contracts\UserRepositoryInterface;
-// use App\DTOs\User\CreateUserDTO;
-// use App\Events\UserRegistered;
-// use App\Models\User;
-// use Illuminate\Support\Facades\DB;
-// use Illuminate\Support\Facades\Hash;
+use App\Contracts\UserRepositoryInterface;
+use App\DTOs\User\CreateUserDTO;
+use App\Events\UserRegistered;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 
 Class UserService
 {
+    
+     /*
+    |--------------------------------------------------------------------------
+    | Register
+    |--------------------------------------------------------------------------
+    */
+
     public function __construct(
         private readonly UserRepositoryInterface $users
     ) {}
